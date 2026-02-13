@@ -19,45 +19,46 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 // app.set('views', 'myviews'); // This is for setup of view of files like html inside views but ejs go inside views folder its defalut feature
 
-
+// -----------------------------------------------------------------------------------------
 // Mongoose and mongo sandbox routes
-app.get('/add-blog', (req, res) => {
-    const blog = new Blog({
-        title: 'new blog 2026',
-        snippet: 'about my new blog',
-        body: 'more about my new blog'
-    });
+// app.get('/add-blog', (req, res) => {
+//     const blog = new Blog({
+//         title: 'new blog 2026',
+//         snippet: 'about my new blog',
+//         body: 'more about my new blog'
+//     });
 
-    blog.save()
-        .then((result) => {
-            res.send(result)
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-});
+//     blog.save()
+//         .then((result) => {
+//             res.send(result)
+//         })
+//         .catch((err) => {
+//             console.log(err);
+//         });
+// });
 
-app.get('/all-blogs', (req, res) => {
-    Blog.find()
-        .then((result) => {
-            res.send(result);
-        })
-        .catch((err) => {
-            console.log(err)
-        });
-});
+// app.get('/all-blogs', (req, res) => {
+//     Blog.find()
+//         .then((result) => {
+//             res.send(result);
+//         })
+//         .catch((err) => {
+//             console.log(err)
+//         });
+// });
 
-app.get('/single-blog', (req, res) => {
-    Blog.findById('698ef1e19d4ef9f6ad5ee6d5')
-        .then((result) => {
-            res.send(result);
-        })
-        .catch((err) => {
-            console.log(err)
-        })
-})
+// app.get('/single-blog', (req, res) => {
+//     Blog.findById('698ef1e19d4ef9f6ad5ee6d5')
+//         .then((result) => {
+//             res.send(result);
+//         })
+//         .catch((err) => {
+//             console.log(err)
+//         })
+// })
 // Listen for request
 // app.listen(3000); // We will listen this when there is connection with database.
+// --------------------------------------------------------------------------------------------------------------------
 
 app.use(morgan('dev'));
 
@@ -75,13 +76,15 @@ app.get('/', (req, res) => {
     // res.sendFile('./views/index.html', { root: __dirname }); // Telling express the current directory by donig __dirname
 
     // After ejs installing
-    const blogs = [
-        {title: 'AI/ML', snippet: 'lorem ipsum can be get by entering'},
-        {title: 'My development journey', snippet: 'lorem ipsum can be get by entering'},
-        {title: 'My robotic journey', snippet: 'lorem ipsum can be get by entering'},
-    ];
+    // const blogs = [
+    //     {title: 'AI/ML', snippet: 'lorem ipsum can be get by entering'},
+    //     {title: 'My development journey', snippet: 'lorem ipsum can be get by entering'},
+    //     {title: 'My robotic journey', snippet: 'lorem ipsum can be get by entering'},
+    // ];
 
-    res.render('index', { title: 'Home', blogs });
+    // res.render('index', { title: 'Home', blogs });
+
+    res.redirect('/blogs');
 
 });
 
@@ -90,6 +93,18 @@ app.get('/about', (req, res) => {
     // res.sendFile('./views/about.html',  { root: __dirname });
     res.render('about', { title: 'About' });
 });
+
+// Blog Routes
+app.get('/blogs', (req, res) => {
+    Blog.find().sort(({ createdAt: -1}))
+        .then((result) => {
+            res.render('index', { title: 'All Blogs', blogs: result })
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+})
+
 
 app.get('/blogs/create', (req, res) => {
     res.render('create', { title: 'Create a new Blog' });
