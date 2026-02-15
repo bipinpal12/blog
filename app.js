@@ -2,21 +2,35 @@
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-const Blog = require('./models/blog'); // Importing modals for blog app
+const blogRoutes = require('./routes/blogRoutes');
 
 // Express app
 const app = express();
 
 const dbURI = 'mongodb+srv://clusterNinja:ninja1234@clusterninja.1sr5kph.mongodb.net/?appName=ClusterNinja';
 mongoose.connect(dbURI)
- .then((result) => app.listen(3000))
- .catch((err) => console.log(err))
+.then((result) => app.listen(3000))
+.catch((err) => console.log(err))
 
 // Register view engine
 app.set('view engine', 'ejs');
 
-// Middleware and static files
+// MIDDLEWARE and static files
 app.use(express.static('public'));
+// For POST request
+app.use(express.urlencoded({ extended: true }));  //urlencoded take all the url encoded data and passed that into an object that we can use in the request object  
+app.use(express.json());  
+app.use(morgan('dev'));
+// After installing morgan through npm we don't neet this
+// app.use((req, res, next) => {
+//     console.log('new request made:');
+//     console.log('host:', req.hostname);
+//     console.log('path:', req.path);
+//     console.log('method:', req.method);
+//     next();
+// })
+
+
 // app.set('views', 'myviews'); // This is for setup of view of files like html inside views but ejs go inside views folder its defalut feature
 
 // -----------------------------------------------------------------------------------------
@@ -60,17 +74,6 @@ app.use(express.static('public'));
 // app.listen(3000); // We will listen this when there is connection with database.
 // --------------------------------------------------------------------------------------------------------------------
 
-app.use(morgan('dev'));
-
-// After installing morgan through npm we don't neet this
-// app.use((req, res, next) => {
-//     console.log('new request made:');
-//     console.log('host:', req.hostname);
-//     console.log('path:', req.path);
-//     console.log('method:', req.method);
-//     next();
-// })
-
 app.get('/', (req, res) => {
     // res.send('<p> Home page.</p>'); 
     // res.sendFile('./views/index.html', { root: __dirname }); // Telling express the current directory by donig __dirname
@@ -94,21 +97,12 @@ app.get('/about', (req, res) => {
     res.render('about', { title: 'About' });
 });
 
-// Blog Routes
-app.get('/blogs', (req, res) => {
-    Blog.find().sort(({ createdAt: -1}))
-        .then((result) => {
-            res.render('index', { title: 'All Blogs', blogs: result })
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-})
 
 
-app.get('/blogs/create', (req, res) => {
-    res.render('create', { title: 'Create a new Blog' });
-})
+// Blog routes
+app.use('/blogs', blogRoutes); // Using it as middleware
+
+
 
 // Redirects
 // app.get('/about-us', (req, res) => {
