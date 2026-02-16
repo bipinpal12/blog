@@ -1,3 +1,8 @@
+require('dotenv').config(); // For environment variables.
+
+// console.log(process.env);   // Debug
+// console.log(process.env.PORT);  
+
 // This is a continuation in server_with_express, people called it as app.js.
 const express = require('express');
 const morgan = require('morgan');
@@ -7,10 +12,23 @@ const blogRoutes = require('./routes/blogRoutes');
 // Express app
 const app = express();
 
-const dbURI = 'mongodb+srv://clusterNinja:ninja1234@clusterninja.1sr5kph.mongodb.net/?appName=ClusterNinja';
+const PORT = process.env.PORT || 3000;
+const dbURI = process.env.MONGO_URI;
+
+if(!PORT || !dbURI){
+    console.error("Environment variables are missing!");
+    process.exit(1);
+    
+}
+
 mongoose.connect(dbURI)
-.then((result) => app.listen(3000))
-.catch((err) => console.log(err))
+    .then((result) => {
+        console.log('MongoDB connected');
+        app.listen(PORT, () => {
+            console.log(`Server is running at: ${PORT}`);
+        });
+    })
+.catch((err) => console.err("Database connection failed:", err));
 
 // Register view engine
 app.set('view engine', 'ejs');
