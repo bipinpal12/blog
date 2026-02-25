@@ -22,3 +22,22 @@ Deployment: Render
 
 # Live Demo 
 🔗 https://blog-pandas.onrender.com
+
+# 📂 Project Structure
+blog-app/
+│
+├── models/
+│   └── blog.js
+│
+├── views/
+│   ├── partials/
+│   ├── index.ejs
+│   ├── details.ejs
+│   ├── create.ejs
+│   └── 404.ejs
+│
+├── public/
+│   └── styles.css
+│
+├── app.js
+└── package.json
