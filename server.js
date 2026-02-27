@@ -28,7 +28,7 @@ const server = http.createServer((req, res) => {
         }
         else {
             // res.write(data);
-            res.end(data); // It does the same thing as of res.write(data)
+            res.end(data); // It does the same thing as of res.write(data)      
         }
     })
 
